@@ -1,0 +1,7 @@
+print("Hello world")
+print(type('23'))
+print(int(23.34),end='')
+print(type(int(23.34)))
+print(2,3,sep=' & ')
+print('A'*5)
+print('Anirudh'[2])
