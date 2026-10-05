@@ -1,0 +1,16 @@
+{
+    "total_income": 45000.0,
+    "total_expense": 4000.0,
+    "balance": 41000.0,
+    "total_by_category": {
+        "food": 1500.0,
+        "travel": 2500.0
+    },
+    "biggest_expense": {
+        "date": "2026-01-07",
+        "amount": 2500.0,
+        "category": "travel",
+        "description": "Train ticket",
+        "type": "Expense"
+    }
+}
