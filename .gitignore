@@ -1,0 +1,40 @@
+# Virtual environments
+.venv/
+venv/
+env/
+dsa/
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Script output
+file.txt
+
+# Secrets
+.env
+.env.*
+
+# PyCharm / IntelliJ (user-specific)
+.idea/workspace.xml
+.idea/dataSources/
+.idea/dataSources.local.xml
+.idea/dbnavigator.xml
+.idea/shelf/
+
+# macOS
+.DS_Store
