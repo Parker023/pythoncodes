@@ -1,4 +1,4 @@
-from expensetracker.models import Expense, Income
+from models import Expense, Income
 from loader import load_transactions
 import pandas as pd
 import numpy as np

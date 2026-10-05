@@ -1,6 +1,6 @@
 import csv
 
-from expensetracker.models import Income, Expense, InvalidTransactionError
+from models import Income, Expense, InvalidTransactionError
 
 
 def load_transactions(path: str):
@@ -10,16 +10,18 @@ def load_transactions(path: str):
     with open(path, "r") as file:
         reader = csv.DictReader(file)
         for row, data in enumerate(reader, start=2):
-            category=data["category"].strip().lower()
             try:
+                category = data["category"].strip().lower()
                 if category == "salary":
                     transactions.append(
-                        Income(data["date"], data["amount"], data["category"], data["description"]))
+                        Income(data["date"], data["amount"], category, data["description"]))
                 else:
                     transactions.append(
-                        Expense(data["date"], data["amount"], data["category"], data["description"]))
+                        Expense(data["date"], data["amount"], category, data["description"]))
             except InvalidTransactionError as e:
                 errors.append(f"Error on row {row}: {e}")
+            except (AttributeError, KeyError):
+                errors.append(f"Error on row {row}: malformed row {data}")
 
     return transactions, errors
 
