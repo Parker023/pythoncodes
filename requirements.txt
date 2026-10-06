@@ -35,3 +35,20 @@ uvicorn==0.54.0
 wheel==0.48.0
 
 pip~=26.1.2
+
+chromadb
+pdfplumber
+langchain
+langchain-core
+langchain-ollama
+langchain-community
+langchain_text_splitters
+unstructured
+unstructured[all-docs]
+fastembed
+pikepdf
+sentence-transformers
+elevenlabs
+langchain-unstructured
+langchain-chroma
+streamlit
