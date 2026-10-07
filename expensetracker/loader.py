@@ -1,9 +1,9 @@
 import csv
 
-from models import Income, Expense, InvalidTransactionError
+from expensetracker.models import Income, Expense, InvalidTransactionError
 
 
-def load_transactions(path: str):
+def load_transactions(path):
     transactions = []
     errors = []
 

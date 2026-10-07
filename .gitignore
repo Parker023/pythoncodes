@@ -39,6 +39,10 @@ expensetracker/spend.png
 .idea/dataSources.local.xml
 .idea/dbnavigator.xml
 .idea/shelf/
+.idea/dictionaries/project.xml
 
 # macOS
 .DS_Store
+
+# Chroma vector store index files (regenerated when the DB is rebuilt)
+*.bin

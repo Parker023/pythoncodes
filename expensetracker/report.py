@@ -1,5 +1,5 @@
-from models import Expense, Income
-from loader import load_transactions
+from expensetracker.models import Expense, Income
+from expensetracker.loader import load_transactions
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

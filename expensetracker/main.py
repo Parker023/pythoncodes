@@ -1,6 +1,6 @@
 import json
-from loader import load_transactions
-from report import summary
+from expensetracker.loader import load_transactions
+from expensetracker.report import summary
 
 
 def main():
