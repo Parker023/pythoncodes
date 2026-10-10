@@ -26,9 +26,11 @@ import sys
 from pathlib import Path
 
 import ollama
+from langchain_ollama import ChatOllama
+from langchain_core.messages import ToolMessage
 
 from expensetracker.loader import load_transactions
-from llmpractice.toolcalling.agents.agent import tools, tool_map
+from llmpractice.toolcalling.agents.agent import TOOLS,tool_map
 
 # Local Ollama model to chat with; it must support tool calling.
 model = "llama3.1"
@@ -37,11 +39,6 @@ model = "llama3.1"
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 data_path = PROJECT_ROOT / "expensetracker" / "data.csv"
 
-# txns: the valid transactions; errors: one message per row that was rejected.
-txns, errors = load_transactions(data_path)
-
-for error in errors:
-    print(f"Error: {error}", file=sys.stderr)
 
 # Constrains the model to reporting tool output. Without this it happily derives
 # figures itself, and generated arithmetic is wrong often enough to matter.
@@ -67,45 +64,30 @@ messages = [
     }
 ]
 
+llm=ChatOllama(model=model,temperature=0).bind_tools(tools=TOOLS)
 # Upper bound on model round-trips, so the loop always terminates.
 MAX_ROUNDS = 5
 
 for round_num in range(MAX_ROUNDS):
-    # Passing `tools` lets the model answer with tool calls instead of text.
-    response = ollama.chat(
-        model=model,
-        messages=messages,
-        tools=tools
-    )
-    # Keep the model's reply (including any tool calls) in the history.
-    messages.append(response.message)
-    # No tool calls means this is the final answer.
-    if not response.message.tool_calls:
-        print(response.message.content)
+    response = llm.invoke(messages)
+    messages.append(response)                    # the whole AIMessage
+
+    if not response.tool_calls:
+        print(response.content)
         break
-    # The model may ask for several tools in one reply; run each of them.
-    for tool_call in response.message.tool_calls:
-        tool_name = tool_call.function.name
+
+    for tool_call in response.tool_calls:
+        tool_name = tool_call["name"]            # a dict, not .function.name
+
         if tool_name not in tool_map:
-            tool_resp = f"Error: no such tool {tool_name!r}"
+            messages.append(ToolMessage(
+                content=f"Error: no such tool {tool_name!r}",
+                name=tool_name,
+                tool_call_id=tool_call["id"],
+            ))
         else:
-            # Look up the Python function behind the tool name.
-            tool = tool_map[tool_name]
-
-            # The tools take no model-supplied arguments; they all work on the
-            # transactions loaded above.
-            tool_resp = tool(txns)
-
-        # Send the result back as a "tool" message for the next round.
-
-
-        messages.append(
-            {
-                "role": "tool",
-                "content": json.dumps(tool_resp),
-                "name": tool_name
-
-            }
-        )
+            # .invoke(tool_call) returns a ready-made ToolMessage with
+            # content, name and tool_call_id already filled in.
+            messages.append(tool_map[tool_name].invoke(tool_call))
 else:
     print(f"No final answer after {MAX_ROUNDS} rounds.", file=sys.stderr)
